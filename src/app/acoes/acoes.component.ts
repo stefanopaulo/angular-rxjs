@@ -2,6 +2,7 @@ import { AcoesService } from './acoes.service';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { switchMap, tap } from 'rxjs/operators';
+import { merge } from 'rxjs';
 
 @Component({
   selector: 'app-acoes',
@@ -10,11 +11,12 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class AcoesComponent {
   acoesInput = new FormControl();
-  acoes$ = this.acoesInput.valueChanges.pipe(
-    tap(console.log),
-    switchMap((valorDigitado) => this.acoesService.getAcoes(valorDigitado)),
-    tap(console.log)
+  todasAcoes$ = this.acoesService.getAcoes();
+  filtroInput$ = this.acoesInput.valueChanges.pipe(
+    switchMap((valorDigitado) => this.acoesService.getAcoes(valorDigitado))
   );
+
+  acoes$ = merge(this.todasAcoes$, this.filtroInput$);
 
   constructor(private acoesService: AcoesService) {}
 }
