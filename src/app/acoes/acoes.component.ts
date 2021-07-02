@@ -1,7 +1,7 @@
 import { AcoesService } from './acoes.service';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
 import { merge } from 'rxjs';
 
 const TIME = 300;
@@ -17,6 +17,7 @@ export class AcoesComponent {
   filtroInput$ = this.acoesInput.valueChanges.pipe(
     debounceTime(TIME),
     filter((valorDigitado) => valorDigitado.length >= 3 || !valorDigitado.length),
+    distinctUntilChanged(),
     switchMap((valorDigitado) => this.acoesService.getAcoes(valorDigitado))
   );
 
