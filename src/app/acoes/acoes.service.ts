@@ -1,5 +1,5 @@
 import { environment } from './../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, pluck } from 'rxjs/operators'
 import { Acao, AcoesAPI } from './modelo/acoes';
@@ -13,8 +13,10 @@ export class AcoesService {
 
   constructor(private http: HttpClient) { }
 
-  getAcoes() {
-    return this.http.get<AcoesAPI>(`${API}/acoes`).pipe(
+  getAcoes(valor?: string) {
+    const params = valor ? new HttpParams().append('valor', valor) : undefined;
+
+    return this.http.get<AcoesAPI>(`${API}/acoes`, { params }).pipe(
       pluck('payload'),
       map((acoes) => acoes.sort((acaoA, acaoB) => this.ordenaPorCodigo(acaoA, acaoB)))
     );
