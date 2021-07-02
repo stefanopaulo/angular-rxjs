@@ -1,7 +1,7 @@
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators'
+import { map, pluck, tap } from 'rxjs/operators'
 import { Acao } from './modelo/acoes';
 
 const API = environment.api;
@@ -15,6 +15,7 @@ export class AcoesService {
 
   getAcoes() {
     return this.http.get<any>(`${API}/acoes`).pipe(
+      pluck('payload'),
       map((acoes) => acoes.sort((acaoA, acaoB) => this.ordenaPorCodigo(acaoA, acaoB)))
     );
   }
